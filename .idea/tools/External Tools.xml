@@ -1,0 +1,16 @@
+<toolSet name="External Tools">
+  <tool name="python-build" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="python" />
+      <option name="PARAMETERS" value="build.py" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/repos/microbit-v2-samples" />
+    </exec>
+  </tool>
+  <tool name="python-build-clean" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="python" />
+      <option name="PARAMETERS" value="build.py -c" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/repos/microbit-v2-samples" />
+    </exec>
+  </tool>
+</toolSet>

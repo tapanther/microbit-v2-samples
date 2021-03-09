@@ -1,0 +1,3 @@
+#!/bin/sh
+echo "Copying file to Windows"
+cp MICROBIT.hex /mnt/c/Users/jsier/MICROBIT.hex
