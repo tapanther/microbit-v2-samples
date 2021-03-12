@@ -2,8 +2,8 @@
 // Created by jsierra on 3/8/21.
 //
 
-#ifndef CODAL_ANALOGAUDIO_H
-#define CODAL_ANALOGAUDIO_H
+#ifndef CODAL_PWMAUDIO_H
+#define CODAL_PWMAUDIO_H
 
 #include "MicroBit.h"
 
@@ -145,4 +145,4 @@ void playScale();
 void audio_virtual_pin_melody();
 
 
-#endif // CODAL_ANALOGAUDIO_H
+#endif // CODAL_PWMAUDIO_H

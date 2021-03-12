@@ -1,5 +1,5 @@
 #include "MicroBit.h"
-#include "analogAudio.h"
+#include "pwmAudio.h"
 #include "graphics.h"
 
 extern Pin *speakerPin;
@@ -116,8 +116,6 @@ void sing()
 
 #pragma clang diagnostic pop
 
-
-
 void fireWakeupEvent(MicroBitEvent e)
 {
     MicroBitEvent(WAKEUP_BEEP_EVENT_ID, WAKEUP_BEEP_EVENT_VALUE);
@@ -134,8 +132,6 @@ int main()
     //MicroBitImage tick_anim((ImageData*)tick);
 
     uBit.init();
-
-    uBit.serial.printf("Waking up!");
 
     uBit.messageBus.listen(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_CLICK, changeXMode);
     uBit.messageBus.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_CLICK, toggleSinging);

@@ -2,7 +2,7 @@
 // Created by jsierra on 3/8/21.
 //
 
-#include "analogAudio.h"
+#include "pwmAudio.h"
 #include "MicroBit.h"
 
 Pin *speakerPin = NULL;

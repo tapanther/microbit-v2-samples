@@ -1,3 +1,10 @@
-#!/bin/sh
-echo "Copying file to Windows"
-cp MICROBIT.hex /mnt/c/Users/jsier/MICROBIT.hex
+#!/usr/bin/bash
+#set -x
+#echo "Copying file to Windows"
+#cp MICROBIT.hex /mnt/c/Users/jsier/MICROBIT.hex
+#echo "Telling Windows to xcopy the file..."
+#cd /mnt/c/windows/system32
+#echo $(pwd)
+#./xcopy.exe "C:\\Users\\jsier\\MICROBIT.hex" "D:\\"
+#set +x
+echo "Done"

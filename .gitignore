@@ -14,3 +14,14 @@ Makefile
 pxtapp
 buildcache.json
 *.pyc
+# Default ignored files
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/../../../../../../:\Users\jsier\CLionProjects\microbit-v2-samples\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+venv
+utils
+cmake-build-debug
