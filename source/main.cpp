@@ -1,6 +1,7 @@
 #include "MicroBit.h"
 #include "pwmAudio.h"
 #include "graphics.h"
+#include "boot.h"
 
 extern Pin *speakerPin;
 
@@ -132,6 +133,8 @@ int main()
     //MicroBitImage tick_anim((ImageData*)tick);
 
     uBit.init();
+
+    boot_anim();
 
     uBit.messageBus.listen(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_CLICK, changeXMode);
     uBit.messageBus.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_CLICK, toggleSinging);

@@ -10,5 +10,5 @@ extern MicroBit uBit;
 void boot_anim()
 {
     uBit.serial.printf("Waking up!");
-    uBit.display.print("HELLO WORLD!!!");
+    uBit.display.scroll("HELLO WORLD!!!", 60);
 }
