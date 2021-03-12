@@ -10,6 +10,7 @@ static int x_pos = 0;
 static int y_pos = 0;
 static bool x_mode = true;
 static bool play_song = false;
+static bool prev_sound_enable;
 
 const int WAKEUP_BEEP_EVENT_ID = MICROBIT_ID_NOTIFY + 10;
 const int WAKEUP_BEEP_EVENT_VALUE = 1;
@@ -41,6 +42,14 @@ void toggleSinging(MicroBitEvent e)
     play_song = !play_song;
 }
 
+inline void enableSound()
+{
+    if(!uBit.audio.isPinEnabled())
+    {
+        uBit.audio.setPinEnabled(true);
+    }
+}
+
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
 void playBeep()
@@ -48,13 +57,19 @@ void playBeep()
     while (true)
     {
         fiber_wait_for_event(WAKEUP_BEEP_EVENT_ID, WAKEUP_BEEP_EVENT_VALUE);
+        uBit.serial.printf("Beep!");
+        prev_sound_enable = uBit.audio.isPinEnabled();
+        enableSound();
         analogPitch(200, 50);
+        uBit.audio.setPinEnabled(prev_sound_enable);
     }
 }
 
 void doClock()
 {
-    MicroBitImage clock_anim((ImageData*)clock);
+    MicroBitImage clock_anim((ImageData*)clock_v2);
+    int clock_anim_h = clock_v2_h;
+    int clock_anim_w = clock_v2_w;
 
     int direction;
     int start = 0;
@@ -62,83 +77,20 @@ void doClock()
 
     while(true)
     {
-        direction = x_mode ? -5 : 5;
+        direction = x_mode ? -clock_anim_w : clock_anim_w;
         frame += direction;
-        frame = (frame > 0) ? -35 : ((frame < -35) ? 0 : frame);
+        frame = (frame > 0) ? -(clock_anim_h - clock_anim_w) :
+                            ((frame < -(clock_anim_h - clock_anim_w)) ? 0 :
+                                                                      frame);
         start = x_mode ? 0 : -40;
         uBit.display.print(clock_anim, 0, frame);
-        fiber_sleep(100);
+        fiber_sleep(50);
     }
 }
 
 void sing()
 {
     using namespace aAudio;
-
-    constexpr MusicNote song[] = {
-        {Note::B3, 4},
-        {Note::B3, 4},
-        {Note::C, 4},
-        {Note::D, 4},
-        {Note::D, 4},
-        {Note::C, 4},
-        {Note::B3, 4},
-        {Note::A3, 4},
-        {Note::G3, 4},
-        {Note::G3, 4},
-        {Note::A3, 4},
-        {Note::B3, 6},
-        {Note::B3, 6},
-        {Note::A3, 2},
-        {Note::A3, 8},
-        {Note::B3, 4},
-        {Note::B3, 4},
-        {Note::C, 4},
-        {Note::D, 4},
-        {Note::D, 4},
-        {Note::C, 4},
-        {Note::B3, 4},
-        {Note::A3, 4},
-        {Note::G3, 4},
-        {Note::G3, 4},
-        {Note::A3, 4},
-        {Note::B3, 4},
-        {Note::A3, 6},
-        {Note::G3, 2},
-        {Note::G3, 8},
-        {Note::A3, 4},
-        {Note::A3, 4},
-        {Note::B3, 4},
-        {Note::G3, 4},
-        {Note::A3, 4},
-        {Note::B3, 2},
-        {Note::C, 2},
-        {Note::B3, 4},
-        {Note::G3, 4},
-        {Note::A3, 4},
-        {Note::B3, 2},
-        {Note::C, 2},
-        {Note::B3, 4},
-        {Note::A3, 4},
-        {Note::G3, 4},
-        {Note::A3, 4},
-        {Note::D3, 8},
-        {Note::B3, 4},
-        {Note::B3, 4},
-        {Note::C, 4},
-        {Note::D, 4},
-        {Note::D, 4},
-        {Note::C, 4},
-        {Note::B3, 4},
-        {Note::A3, 4},
-        {Note::G3, 4},
-        {Note::G3, 4},
-        {Note::A3, 4},
-        {Note::B3, 4},
-        {Note::A3, 6},
-        {Note::G3, 2},
-        {Note::G3, 8}
-    };
 
     int song_pos = 0;
     const int beat = 80;
@@ -148,6 +100,7 @@ void sing()
     {
         if(play_song)
         {
+            enableSound();
             analogPitch(song[song_pos].note,
                         beat*song[song_pos].quarter_beats);
             song_pos++;
@@ -155,6 +108,7 @@ void sing()
         }
         else
         {
+            uBit.audio.setPinEnabled(false);
             fiber_sleep(200);
         }
     }
@@ -175,10 +129,13 @@ int main()
 {
     speakerPin = &uBit.audio.virtualOutputPin;
     uBit.audio.setVolume(25);
+    uBit.audio.setSpeakerEnabled(false);
 
     //MicroBitImage tick_anim((ImageData*)tick);
 
     uBit.init();
+
+    uBit.serial.printf("Waking up!");
 
     uBit.messageBus.listen(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_CLICK, changeXMode);
     uBit.messageBus.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_CLICK, toggleSinging);

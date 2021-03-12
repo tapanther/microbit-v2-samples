@@ -27,8 +27,8 @@ void analogPitch(int frequency, int ms) {
     if (ms > 0) {
         fiber_sleep(ms);
         speakerPin->setAnalogValue(0);
-//        speakerPin->setAnalogPeriodUs(0);
-//        speakerPin->setDigitalValue(0);
+        speakerPin->setAnalogPeriodUs(0);
+//        speakerPin->setDigitalValue(1);
         fiber_sleep(20);
     }
 }

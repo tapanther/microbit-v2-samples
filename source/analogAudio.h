@@ -58,13 +58,83 @@ namespace aAudio {
         Bb5 = 932,
         B5 = 988,
     };
+
+    struct MusicNote
+    {
+        aAudio::Note note;
+        int quarter_beats;
+    };
+
+    // "Prerecorded songs"
+
+    constexpr MusicNote song[] = {
+        {Note::B3, 4},
+        {Note::B3, 4},
+        {Note::C, 4},
+        {Note::D, 4},
+        {Note::D, 4},
+        {Note::C, 4},
+        {Note::B3, 4},
+        {Note::A3, 4},
+        {Note::G3, 4},
+        {Note::G3, 4},
+        {Note::A3, 4},
+        {Note::B3, 6},
+        {Note::B3, 6},
+        {Note::A3, 2},
+        {Note::A3, 8},
+        {Note::B3, 4},
+        {Note::B3, 4},
+        {Note::C, 4},
+        {Note::D, 4},
+        {Note::D, 4},
+        {Note::C, 4},
+        {Note::B3, 4},
+        {Note::A3, 4},
+        {Note::G3, 4},
+        {Note::G3, 4},
+        {Note::A3, 4},
+        {Note::B3, 4},
+        {Note::A3, 6},
+        {Note::G3, 2},
+        {Note::G3, 8},
+        {Note::A3, 4},
+        {Note::A3, 4},
+        {Note::B3, 4},
+        {Note::G3, 4},
+        {Note::A3, 4},
+        {Note::B3, 2},
+        {Note::C, 2},
+        {Note::B3, 4},
+        {Note::G3, 4},
+        {Note::A3, 4},
+        {Note::B3, 2},
+        {Note::C, 2},
+        {Note::B3, 4},
+        {Note::A3, 4},
+        {Note::G3, 4},
+        {Note::A3, 4},
+        {Note::D3, 8},
+        {Note::B3, 4},
+        {Note::B3, 4},
+        {Note::C, 4},
+        {Note::D, 4},
+        {Note::D, 4},
+        {Note::C, 4},
+        {Note::B3, 4},
+        {Note::A3, 4},
+        {Note::G3, 4},
+        {Note::G3, 4},
+        {Note::A3, 4},
+        {Note::B3, 4},
+        {Note::A3, 6},
+        {Note::G3, 2},
+        {Note::G3, 8}
+    };
+
 }
 
-struct MusicNote
-{
-    aAudio::Note note;
-    int quarter_beats;
-};
+
 
 void stopAnalogPitch();
 
