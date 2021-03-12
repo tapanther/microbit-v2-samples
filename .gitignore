@@ -24,4 +24,5 @@ buildcache.json
 /httpRequests/
 venv
 utils
-cmake-build-debug
+/cmake-build-debug/*
+/cmake-build-default/*
