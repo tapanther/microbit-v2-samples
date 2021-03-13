@@ -2,12 +2,14 @@
 // Created by jsierra on 3/8/21.
 //
 
-#ifndef CODAL_PWMAUDIO_H
-#define CODAL_PWMAUDIO_H
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
+#ifndef CODAL_PWM_AUDIO_H
+#define CODAL_PWM_AUDIO_H
 
 #include "MicroBit.h"
 
-namespace aAudio {
+namespace AudioTypes {
     enum Note {
         C = 262,
         CSharp = 277,
@@ -61,8 +63,8 @@ namespace aAudio {
 
     struct MusicNote
     {
-        aAudio::Note note;
-        int quarter_beats;
+        const Note note;
+        const int quarter_beats;
     };
 
     // "Prerecorded songs"
@@ -134,15 +136,12 @@ namespace aAudio {
 
 }
 
-
-
-void stopAnalogPitch();
+void enableSound();
 
 void analogPitch(int frequency, int ms);
 
-void playScale();
+void sing();
 
-void audio_virtual_pin_melody();
+#endif // CODAL_PWM_AUDIO_H
 
-
-#endif // CODAL_PWMAUDIO_H
+#pragma clang diagnostic pop

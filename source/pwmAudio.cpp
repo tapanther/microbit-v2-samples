@@ -5,11 +5,21 @@
 #include "pwmAudio.h"
 #include "MicroBit.h"
 
-Pin *speakerPin = NULL;
+extern MicroBit uBit;
+
+Pin *speakerPin = nullptr;
+
+bool play_song = false;
+bool prev_sound_enable;
+
 static uint8_t pitchVolume = 0xff;
 
-void stopAnalogPitch() {
-    speakerPin->setAnalogValue(0);
+void enableSound()
+{
+    if(!uBit.audio.isPinEnabled())
+    {
+        uBit.audio.setPinEnabled(true);
+    }
 }
 
 // Pin control as per MakeCode.
@@ -28,24 +38,35 @@ void analogPitch(int frequency, int ms) {
         fiber_sleep(ms);
         speakerPin->setAnalogValue(0);
         speakerPin->setAnalogPeriodUs(0);
-//        speakerPin->setDigitalValue(1);
         fiber_sleep(20);
     }
 }
 
-void playScale() {
-    const int beat = 500;
-    analogPitch(aAudio::Note::C5, beat);
-    analogPitch(aAudio::Note::B, beat);
-    analogPitch(aAudio::Note::A, beat);
-    analogPitch(aAudio::Note::G, beat);
-    analogPitch(aAudio::Note::F, beat);
-    analogPitch(aAudio::Note::E, beat);
-    analogPitch(aAudio::Note::D, beat);
-    analogPitch(aAudio::Note::C, beat);
-}
-
-void audio_virtual_pin_melody()
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EndlessLoop"
+void sing()
 {
-    playScale();
+    using namespace AudioTypes;
+
+    int song_pos = 0;
+    const int beat = 80;
+    const int len = sizeof(song) / sizeof(song[0]);
+
+    while(true)
+    {
+        if(play_song)
+        {
+            enableSound();
+            analogPitch(song[song_pos].note,
+                        beat*song[song_pos].quarter_beats);
+            song_pos++;
+            song_pos = song_pos >= len ? 0 : song_pos;
+        }
+        else
+        {
+            uBit.audio.setPinEnabled(false);
+            fiber_sleep(200);
+        }
+    }
 }
+#pragma clang diagnostic pop
