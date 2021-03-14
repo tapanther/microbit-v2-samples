@@ -3,7 +3,6 @@
 #include "graphics.h"
 #include "boot.h"
 #include "radioHelper.h"
-#include <vector>
 
 //---------------------------------
 // Externals and Globals
@@ -35,20 +34,38 @@ void toggleSinging(__unused MicroBitEvent e)
     play_song = !play_song;
 }
 
-void sendButton(__unused MicroBitEvent e)
+inline void sendString(uint8_t* send_string, int length)
 {
-    uint8_t buttonA[] = "ButtonA\0";
-    uBit.radio.datagram.send(buttonA, sizeof(buttonA));
+    uBit.radio.datagram.send(send_string, length);
     uBit.sleep(100);
 }
 
-void onRadioData(MicroBitEvent e)
+void sendButtonA(__unused MicroBitEvent e)
+{
+    uint8_t buttonA[] = "ButtonA\0";
+    sendString(buttonA, sizeof(buttonA));
+}
+
+void sendButtonB(__unused MicroBitEvent e)
+{
+    uint8_t buttonB[] = "ButtonB\0";
+    sendString(buttonB, sizeof(buttonB));
+}
+
+void onRadioData(__unused MicroBitEvent e)
 {
     PacketBuffer recBytes = uBit.radio.datagram.recv();
     ManagedString st = getManagedStringFromPacketBuffer(recBytes);
 
     uBit.serial.send(st);
     uBit.display.scroll(st, 50);
+}
+
+void recalibrateCompass(__unused MicroBitEvent)
+{
+    uint8_t recal[] = "RECAL\0";
+    sendString(recal, sizeof(recal));
+    uBit.compass.calibrate();
 }
 
 //---------------------------------
@@ -91,7 +108,29 @@ void doClock()
     }
 }
 
+void showCompass()
+{
+    int quadrant;
+    float heading;
 
+    int frame;
+    MicroBitImage clock_anim((ImageData*)compass_v2);
+
+    if (!uBit.compass.isCalibrated())
+    {
+        uBit.compass.calibrate();
+    }
+
+    while(true)
+    {
+        heading = (float) uBit.compass.heading();
+        quadrant = static_cast<int>((heading - 11.25f) / 22.5f);
+//        uBit.display.print(quadrant);
+        frame = -5 * quadrant;
+        uBit.display.print(clock_anim, 0, frame);
+        fiber_sleep(10);
+    }
+}
 
 #pragma clang diagnostic pop
 
@@ -102,18 +141,37 @@ int main()
     uBit.audio.setSpeakerEnabled(false);
 
     uBit.init();
+
+
+
+    int asm_out = 0;
+    int asm_in = 42;
+
+    asm("movs    %[asm_out], #21\n"
+        "MY_LABEL:\n\t"
+        "add     %[asm_out], %[asm_in]"
+        : [asm_out] "+r" (asm_out)
+        : [asm_in] "r" (asm_in)
+        : "cc"
+        );
+
+    uBit.display.scroll(asm_out);
+
+    uBit.sleep(2000);
+
     uBit.radio.enable();
 
     boot_anim();
 
-    uBit.messageBus.listen(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_CLICK, sendButton);
-    uBit.messageBus.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_CLICK, toggleSinging);
-    uBit.messageBus.listen(MICROBIT_ID_FACE, MICROBIT_BUTTON_EVT_CLICK, changeXMode);
+    uBit.messageBus.listen(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_CLICK, sendButtonA);
+    uBit.messageBus.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_CLICK, sendButtonB);
+    uBit.messageBus.listen(MICROBIT_ID_FACE, MICROBIT_BUTTON_EVT_CLICK, recalibrateCompass);
     uBit.messageBus.listen(MICROBIT_ID_RADIO, MICROBIT_RADIO_EVT_DATAGRAM, onRadioData);
 
     create_fiber(playBeep);
+    create_fiber(showCompass);
 //    create_fiber(doClock);
-    create_fiber(sing);
+//    create_fiber(sing);
 
     release_fiber();
 }
